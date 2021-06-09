@@ -157,15 +157,17 @@ class RadClass:
         until EOF reached. Prints progress over the course of the analysis.
         Only runs for a set node (datapath) with data already queued.
         '''
-        bar = progressbar.ProgressBar(max_value=100, redirect_stdout=True)
-        inverse_dt = 1.0 / (self.processor.timestamps[-1] - self.processor.timestamps[0])
+        bar = progressbar.ProgressBar(max_value=len(self.processor.timestamps), redirect_stdout=True)
+        #inverse_dt = 1.0 / (self.processor.timestamps[-1] - self.processor.timestamps[0])
 
         log_interval = 10000  # number of samples analyzed between log updates
         running = True  # tracks whether to end analysis
         while running:
             # print status at set intervals
-            if np.where(self.processor.timestamps == self.working_time)[0][0] % log_interval == 0:
-                bar.update(round((self.working_time - self.processor.timestamps[0]) * inverse_dt, 4)*100)
+            index = np.where(self.processor.timestamps == self.working_time)[0][0]
+            if index % log_interval == 0:
+                #bar.update(round((self.working_time - self.processor.timestamps[0]) * inverse_dt, 4)*100)
+                bar.update(index)
 
                 readable_time = time.strftime('%m/%d/%Y %H:%M:%S',  time.gmtime(self.working_time))
                 logging.info("--\tCurrently working on timestamps: {}\n".format(readable_time))
@@ -176,7 +178,7 @@ class RadClass:
 
             # pass data to analysis object if available
             if self.analysis is not None:
-                self.analysis.run(data)
+                self.analysis.run(data, self.working_time)
 
             if self.store_data:
                 self.storage = pd.concat([self.storage, pd.DataFrame([data], index=[self.working_time])])
