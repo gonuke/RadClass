@@ -23,9 +23,14 @@ class BackgroundEstimator:
     background = pd.DataFrame(columns=['timestamp', 'count_rate'])
     data = np.empty((0, 2))
 
-    def __init__(self, confidence=0.95, ofilename='bckg_results'):
+    def __init__(self, confidence=0.95, ofilename='bckg_results', store_all = False, energy_bins = 1000):
         self.confidence = confidence
         self.ofilename = ofilename
+
+        self.store_all = store_all
+        if store_all:
+            self.store_all = store_all
+            self.spectra = np.empty((0,energy_bins))
 
     def __del__(self):
         '''
@@ -36,12 +41,9 @@ class BackgroundEstimator:
         # this method could be compressed to save memory
         self.background.to_csv(self.ofilename+'.csv', index=False)
 
-    def save_all(self, observations):
-        data = pd.DataFrame()
-        data['timestamps'] = observations[:, 0]
+    def save_all(self):
         for i in range(1000):
-            data[str(i+1)] = observations[:, i+1]
-        data.to_csv('results/oct2019_channels.csv', mode='a')
+            self.background[str(i+1)] = self.spectra[:, i+1]
 
     def sort(self):
         '''
@@ -83,6 +85,9 @@ class BackgroundEstimator:
         '''
 
         count_rate = np.sum(data)
+        
+        if self.store_all:
+            self.spectra = np.vstack((self.spectra, data))
 
         # alternative: use pandas and "append"
         # slower (by 3 and 20 minutes respectively) than storing in array
@@ -105,5 +110,7 @@ class BackgroundEstimator:
         '''
 
         self.estimate()
+        if self.store_all:
+            self.save_all()
         # this method could be compressed to save memory
         self.background.to_csv(self.ofilename+'.csv', index=False)
