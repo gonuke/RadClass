@@ -37,11 +37,6 @@ class BackgroundEstimator:
             self.store_all = store_all
             self.spectra = np.empty((0, energy_bins))
 
-        self.store_all = store_all
-        if store_all:
-            self.store_all = store_all
-            self.spectra = np.empty((0,energy_bins))
-
     def __del__(self):
         '''
         Saves results upon completion of script, even if the script crashes.
@@ -104,7 +99,7 @@ class BackgroundEstimator:
         '''
 
         count_rate = np.sum(data)
-        
+
         if self.store_all:
             self.spectra = np.vstack((self.spectra, data))
 
@@ -134,7 +129,5 @@ class BackgroundEstimator:
         '''
 
         self.estimate()
-        if self.store_all:
-            self.save_all()
         # this method could be compressed to save memory
         self.background.to_csv(self.ofilename+'.csv', index=False)
