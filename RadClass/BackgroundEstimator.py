@@ -18,12 +18,16 @@ class BackgroundEstimator:
         count rates/timestamps are saved.
     ofilename: Output filename excluding extension. File is stored as a csv.
         Default is bckg_results.
+    store_all: Boolean. Indicates whether to store spectral information.
+    spectra: Optional NumPy array that stores spectral data from energy binning.
+    energy_bins: The number of energy bins defined by the data under analysis.
     '''
 
     background = pd.DataFrame(columns=['timestamp', 'count_rate'])
     data = np.empty((0, 2))
 
-    def __init__(self, confidence=0.95, ofilename='bckg_results', store_all = False, energy_bins = 1000):
+    def __init__(self, confidence=0.95, ofilename='bckg_results',
+                 store_all = False, energy_bins = 1000):
         self.confidence = confidence
         self.ofilename = ofilename
 
@@ -42,6 +46,10 @@ class BackgroundEstimator:
         self.background.to_csv(self.ofilename+'.csv', index=False)
 
     def save_all(self):
+        '''
+        Adds spectra to saved data if requested.
+        '''
+
         for i in range(1000):
             self.background[str(i+1)] = self.spectra[:, i+1]
 
@@ -65,6 +73,10 @@ class BackgroundEstimator:
         # building pandas DataFrame once from numpy array
         self.background['timestamp'] = self.data[:, 0]
         self.background['count_rate'] = self.data[:, 1]
+
+        # must happen before estimation to maintain order of rows
+        if self.store_all:
+            self.save_all()
 
         # find number of background samples
         sample_size = len(self.background.index)
@@ -110,7 +122,5 @@ class BackgroundEstimator:
         '''
 
         self.estimate()
-        if self.store_all:
-            self.save_all()
         # this method could be compressed to save memory
         self.background.to_csv(self.ofilename+'.csv', index=False)
