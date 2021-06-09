@@ -51,7 +51,7 @@ class BackgroundEstimator:
         '''
 
         for i in range(1000):
-            self.background[str(i+1)] = self.spectra[:, i+1]
+            self.background[str(i+1)] = self.spectra[:, i]
 
     def sort(self):
         '''
