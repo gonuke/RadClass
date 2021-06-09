@@ -33,7 +33,7 @@ def test_estimation():
     spectra = np.empty((timesteps, energy_bins))
     for i in range(timesteps):
         spectra[i].fill(values[i])
-    print(spectra)
+
     # create sample test file with above simulated data
     create_file(filename, datapath, labels, live, timestamps, spectra,
                 timesteps, energy_bins)
@@ -92,7 +92,7 @@ def test_spectral_storage():
     spectra = np.empty((timesteps, energy_bins))
     for i in range(timesteps):
         spectra[i].fill(values[i])
-    print(spectra)
+
     # create sample test file with above simulated data
     create_file(filename, datapath, labels, live, timestamps, spectra,
                 timesteps, energy_bins)
