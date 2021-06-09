@@ -67,7 +67,6 @@ class BackgroundEstimator:
         '''
         Saves data to a Pandas DataFrame and selects a subset with the smallest
             gross count rates.
-
         Attributes:
         samples_size: The total number of samples analyzed.
         num_samples: The number of samples to select and save.
