@@ -41,6 +41,7 @@ class BackgroundEstimator:
         Saves results upon completion of script, even if the script crashes.
         '''
 
+        self.background = pd.DataFrame(columns=['timestamp', 'count_rate'])
         self.estimate()
         # this method could be compressed to save memory
         self.background.to_csv(self.ofilename+'.csv', index=False)
