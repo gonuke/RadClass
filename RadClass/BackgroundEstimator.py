@@ -96,3 +96,14 @@ class BackgroundEstimator:
         # instead of estimating at the end, checkpointing could occur
         # if len(self.data) % 10000:
         #    self.estimate()
+
+    def write(self):
+        '''
+        Identical to destructor but can be manually called.
+        NOTE: Only write or __del__ should be kept, but there is a design
+            question of which is the appropriate method to write to file.
+        '''
+
+        self.estimate()
+        # this method could be compressed to save memory
+        self.background.to_csv(self.ofilename+'.csv', index=False)
