@@ -103,9 +103,6 @@ class BackgroundEstimator:
         if self.store_all:
             self.spectra = np.vstack((self.spectra, data))
 
-        if self.store_all:
-            self.spectra = np.vstack((self.spectra, data))
-
         # alternative: use pandas and "append"
         # slower (by 3 and 20 minutes respectively) than storing in array
         # dfrow = {'timestamp': timestamp, 'count-rate': count_rate}
