@@ -19,7 +19,7 @@ class BackgroundEstimator:
     ofilename: Output filename excluding extension. File is stored as a csv.
         Default is bckg_results.
     store_all: Boolean. Indicates whether to store spectral information.
-    spectra: Optional NumPy array that stores spectral data from energy binning.
+    spectra: Optional NumPy array that stores spectral data from energy bins.
     energy_bins: The number of energy bins defined by the data under analysis.
     '''
 
@@ -27,7 +27,7 @@ class BackgroundEstimator:
     data = np.empty((0, 2))
 
     def __init__(self, confidence=0.95, ofilename='bckg_results',
-                 store_all = False, energy_bins = 1000):
+                 store_all=False, energy_bins=1000):
         self.confidence = confidence
         self.ofilename = ofilename
 
@@ -98,7 +98,7 @@ class BackgroundEstimator:
         '''
 
         count_rate = np.sum(data)
-        
+
         if self.store_all:
             self.spectra = np.vstack((self.spectra, data))
 
@@ -106,7 +106,9 @@ class BackgroundEstimator:
         # slower (by 3 and 20 minutes respectively) than storing in array
         # dfrow = {'timestamp': timestamp, 'count-rate': count_rate}
         # self.background.loc[len(self.background.index)] = dfrow
-        # self.background = pd.concat([self.background, pd.DataFrame([data], index=[timestamp])])
+        # self.background = pd.concat([self.background,
+        #                              pd.DataFrame([data],
+        #                                           index=[timestamp])])
 
         # using numpy to build lightweight matrix instead of pandas
         self.data = np.vstack([self.data, [timestamp, count_rate]])
