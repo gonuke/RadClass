@@ -30,11 +30,12 @@ class BackgroundEstimator:
                  store_all=False, energy_bins=1000):
         self.confidence = confidence
         self.ofilename = ofilename
+        self.energy_bins = energy_bins
 
         self.store_all = store_all
         if store_all:
             self.store_all = store_all
-            self.spectra = np.empty((0,energy_bins))
+            self.spectra = np.empty((0, energy_bins))
 
     def __del__(self):
         '''
@@ -51,7 +52,7 @@ class BackgroundEstimator:
         Adds spectra to saved data if requested.
         '''
 
-        for i in range(1000):
+        for i in range(self.energy_bins):
             self.background[str(i+1)] = self.spectra[:, i]
 
     def sort(self):
