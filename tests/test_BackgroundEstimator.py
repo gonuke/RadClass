@@ -16,7 +16,6 @@ timestamps = np.arange(start_date,
 live = np.full((len(timestamps),), test_data.livetime)
 # randomly order incremental "spectra"
 values = np.arange(test_data.timesteps)
-#np.random.shuffle(values)
 spectra = np.array([np.full((test_data.energy_bins,), x) for x in values])
 
 @pytest.fixture(scope="module", autouse=True)
