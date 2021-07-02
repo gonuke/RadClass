@@ -18,6 +18,7 @@ live = np.full((len(timestamps),), test_data.livetime)
 values = np.arange(test_data.timesteps)
 spectra = np.array([np.full((test_data.energy_bins,), x) for x in values])
 
+
 @pytest.fixture(scope="module", autouse=True)
 def init_test_file():
     # create sample test file with above simulated data
@@ -26,10 +27,10 @@ def init_test_file():
 
 
 def test_estimation():
-    stride = 10
-    integration = 10
+    stride = 100
+    integration = 100
 
-    confidence = 0.95
+    confidence = 0.8
     ofilename = 'bckg_results'
     bckg = BackgroundEstimator(confidence=confidence, ofilename=ofilename)
     # run handler script
@@ -41,24 +42,26 @@ def test_estimation():
 
     # the resulting observation should be:
     #   counts * integration / live-time
-    expected = (((integration-1)**2 + (integration-1))/(2*test_data.livetime))*test_data.energy_bins
+    expected = (((integration-1)**2 + (integration-1)) /
+                (2*test_data.livetime)) * test_data.energy_bins
     results = np.genfromtxt('bckg_results.csv', delimiter=',', skip_header=1)
-    np.testing.assert_equal(results[0][1], expected)
+    np.testing.assert_almost_equal(results[0][1], expected, decimal=3)
 
     time_idx = np.where(values == 0)[0][0]
     np.testing.assert_equal(results[0][0], timestamps[time_idx])
 
-    expected_num = int((test_data.timesteps / integration) * (1 - confidence))
+    expected_num = round((test_data.timesteps / integration) *
+                         (1 - confidence))
     np.testing.assert_equal(len(results), expected_num)
 
     os.remove('bckg_results.csv')
 
 
 def test_spectral_storage():
-    stride = 10
-    integration = 10
+    stride = 100
+    integration = 100
 
-    confidence = 0.95
+    confidence = 0.8
     ofilename = 'bckg_results'
     bckg = BackgroundEstimator(confidence=confidence, ofilename=ofilename,
                                store_all=True,
@@ -70,9 +73,10 @@ def test_spectral_storage():
 
     bckg.write()
 
-    #expected = np.zeros((test_data.energy_bins,))
-    expected = np.full((test_data.energy_bins,), ((integration-1)**2 + (integration-1))/(2*test_data.livetime))
+    expected = np.full((test_data.energy_bins,),
+                       ((integration-1)**2 + (integration-1)) /
+                       (2*test_data.livetime))
     results = np.genfromtxt('bckg_results.csv', delimiter=',', skip_header=1)
-    np.testing.assert_equal(results[0][2:], expected)
+    np.testing.assert_almost_equal(results[0][2:], expected, decimal=3)
 
     os.remove('bckg_results.csv')
