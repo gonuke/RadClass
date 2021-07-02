@@ -26,6 +26,22 @@ def init_test_file():
     os.remove(test_data.filename)
 
 
+def test_init():
+    confidence = 0.8
+    ofilename = 'test_ofilename'
+    store_all = True
+
+    bckg = BackgroundEstimator(confidence=confidence,
+                               ofilename=ofilename,
+                               store_all=store_all,
+                               energy_bins=test_data.energy_bins)
+
+    np.testing.assert_equal(confidence, bckg.confidence)
+    np.testing.assert_equal(ofilename, bckg.ofilename)
+    np.testing.assert_equal(store_all, bckg.store_all)
+    np.testing.assert_equal(test_data.energy_bins, bckg.energy_bins)
+
+
 def test_estimation():
     stride = 100
     integration = 100
